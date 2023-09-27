@@ -85,4 +85,55 @@ class Methods
     return x
   end
 
+  def gauss(matrix = [], field_dimension = 0)
+    
+    if @debug_mode
+      puts %{using gaussian_elimination for matrix: #{matrix}}
+    end
+
+    if matrix.empty? || field_dimension == 0
+      raise "Not enough data!"
+    end
+
+    n = matrix.length
+
+    (0..n - 1).each do |i|
+      max_row = i
+      (i + 1..n - 1).each do |k|
+        # find max element in the column
+        max_row = k if (matrix[k][i] > matrix[max_row][i])
+      end
+
+      # swap rows
+      matrix[i], matrix[max_row] = matrix[max_row], matrix[i] 
+
+      if matrix[i][i] == 0
+        # main element == 0 => no solution
+        raise "Equation's system has no solution!"
+      end
+
+      (i + 1..n - 1).each do |k|
+        factor = matrix[k][i] * inverse(matrix[i][i], field_dimension) % field_dimension
+        (i..n).each do |j|
+          matrix[k][j] = (matrix[k][j] - matrix[i][j] * factor % field_dimension + field_dimension) % field_dimension
+        end
+      end
+
+      puts %{step #{i} matrix: #{matrix}} if @debug_mode
+    end
+
+    result = Array.new(n, 0)
+
+    (n - 1).downto(0).each do |i|
+      result[i] = (matrix[i][n] * inverse(matrix[i][i], field_dimension) % field_dimension + field_dimension) % field_dimension
+      (0..i - 1).each do |k|
+        matrix[k][n] = (matrix[k][n] - matrix[k][i] * result[i] % field_dimension + field_dimension) % field_dimension
+        matrix[k][i] = 0
+      end
+      puts %{reverse step #{i} matrix: #{matrix}} if @debug_mode
+    end
+
+    return result
+  end
+
 end
