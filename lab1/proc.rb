@@ -65,10 +65,10 @@ def solve_gauss_system
 end
 
 #1
-#many_gcds
+many_gcds
 
 #2
-# solve_comparation_system
+solve_comparation_system
 
 #3
 solve_gauss_system

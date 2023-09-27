@@ -69,7 +69,12 @@ class Methods
     end
   end
 
-  def chineese_reminder_theorem(coefficients, modulus)
+  def chineese_reminder_theorem(coefficients = [], modulus = [])
+
+    if coefficients.empty? || modulus.empty?
+      raise "Not enough data!"
+    end
+
     puts %{using chineese_reminder_theorem for #{coefficients} in #{modulus}} if @debug_mode
     x = 0
     fact = modulus.reduce(:*)
