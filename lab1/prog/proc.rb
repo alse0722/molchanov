@@ -10,7 +10,7 @@ def many_gcds
   puts %{Default: gcd(#{a}, #{b}) = #{@methods.gcd(a, b)}}
   puts %{Binary:  gcd(#{a}, #{b}) = #{@methods.gcd_bin(a, b)}}
   res = @methods.gcd_ext(a, b)
-  puts %{Default: gcd(#{a}, #{b}) = #{res[0]}, x = #{res[1]}, y = #{res[2]}}
+  puts %{Extended: gcd(#{a}, #{b}) = #{res[0]}, x = #{res[1]}, y = #{res[2]}}
 end
 
 def solve_comparation_system
@@ -40,38 +40,37 @@ def solve_comparation_system
     puts %{modulus: #{modulus}}
   end
 
-  puts %{Result: #{@methods.chineese_reminder_theorem(coefficients, modulus)}}
+  res = @methods.chineese_reminder_theorem(coefficients, modulus)
+
+  puts %{Result: #{res[:x]} (mod #{res[:md]})}
 
 end
 
 def solve_gauss_system
-  puts %{Solving equation's system by Gauss method!}
+  puts "\n[GAUSS] Enter field (p):"
+  field = gets.chomp.to_i
 
+  puts "\n[GAUSS] Enter the number of rows and columns of the system matrix:"
+  rows, cols = gets.chomp.split.map(&:to_i)
+
+  puts "\n[GAUSS] Enter the system matrix:"
   matrix = []
-
-  puts %{Enter count of equations in system:}
-  n = gets.strip.to_i
-
-  puts %{Enter equations:}
-  n.times do
-    matrix << gets.split.map(&:to_i)
+  rows.times do
+    row = gets.chomp.split.map(&:to_i)
+    matrix << row
   end
 
-  puts %{Enter module:}
-  field_dimension = gets.to_i
-
-  puts %{Result: #{@methods.gauss(matrix, field_dimension)}}
-
+  triangular, status = @methods.gauss(matrix, field)
+  puts "\n[GAUSS] Triangular matrix: "
+  @methods.get_matrix(matrix)
+  @methods.get_ans([matrix, status], field)
 end
 
 #1
-many_gcds
+# many_gcds
 
 #2
-solve_comparation_system
+# solve_comparation_system
 
 #3
 solve_gauss_system
-
-#tests
-# puts @methods.inverse(5, 10)
