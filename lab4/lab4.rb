@@ -33,6 +33,53 @@ class PollardMethod
   end
 end
 
+class PollardMethod2
+  def initialize(n, eps)
+    raise ArgumentError, 'eps должен быть в пределах от 0 до 1' unless eps > 0 && eps < 1
+    @n = n
+    @eps = eps
+  end
+
+  def factorize
+    return [1] if @n == 1
+    return [1, @n] if Prime.prime?(@n)
+
+    factors = []
+
+    f = proc { |z| (z**2 + 1) % @n }
+
+    x = 2
+    y = 2
+    d = 1
+
+    while d == 1
+      x = f.call(x)
+      y = f.call(f.call(y))
+      d = (x - y).gcd(@n)
+    end
+
+    if d == @n
+      factors << "Не удалось разложить число #{@n}."
+    else
+      q = @n / d
+      factors.concat(factorize_helper(d))
+      factors.concat(factorize_helper(q))
+    end
+
+    factors
+  end
+
+  private
+
+  def factorize_helper(num)
+    if Prime.prime?(num)
+      [num]
+    else
+      PollardMethod.new(num, @eps).factorize
+    end
+  end
+end
+
 # class PollardMethodPMinusOne
 #   def initialize(n, b)
 #     @n = n
